@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <h1>PDMS sign in</h1>
+  <p class="text-muted">Station personnel only. All access is logged.</p>
+  <form method="post" class="stacked">
+    {% csrf_token %}
+    <label for="id_username">Username</label>
+    {{ form.username }}
+    <label for="id_password">Password</label>
+    {{ form.password }}
+    <p style="margin-top:1.25rem"><button type="submit" class="btn">Continue</button></p>
+  </form>
+</div>
+{% endblock %}

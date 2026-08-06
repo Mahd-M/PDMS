@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}FIRs{% endblock %}
+{% block content %}
+<h1>FIRs &amp; cases</h1>
+<p><a class="btn" href="{% url 'cases:fir_create' %}">File new FIR</a></p>
+<table class="card">
+  <thead><tr><th>FIR #</th><th>Station</th><th>Filed</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for fir in page %}
+    <tr>
+      <td>{{ fir.fir_number }}{% if fir.is_sealed %} <span class="badge sealed">sealed</span>{% endif %}</td>
+      <td>{{ fir.station }}</td>
+      <td>{{ fir.date_filed|date:"Y-m-d" }}</td>
+      <td>{{ fir.case.get_status_display|default:"--" }}</td>
+      <td><a href="{% url 'cases:fir_detail' fir.pk %}">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No FIRs visible to your role yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page.has_other_pages %}
+<p class="card">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">&laquo; Prev</a>{% endif %}
+  Page {{ page.number }} of {{ page.paginator.num_pages }}
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next &raquo;</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

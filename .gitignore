@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+db.sqlite3
+media/
+.env
+*.log
+.venv/
+venv/
+pdms_app_roadmap.md
+personal_notes(mahd).txt

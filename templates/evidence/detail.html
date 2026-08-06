@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Evidence{% endblock %}
+{% block content %}
+<h1>{{ item.description }}</h1>
+<div class="card">
+  <p><strong>Case:</strong> {{ item.case.fir.fir_number }}</p>
+  <p><strong>Uploaded:</strong> {{ item.uploaded_at }} by {{ item.uploaded_by }}</p>
+  <p><strong>SHA-256:</strong> <code>{{ item.sha256_hash }}</code></p>
+  <p><a class="btn" href="{{ item.file.url }}">Download original file</a></p>
+</div>
+
+<div class="card">
+  <h2>Chain of custody</h2>
+  <table>
+    <thead><tr><th>When</th><th>Action</th><th>By</th><th>Note</th></tr></thead>
+    <tbody>
+      {% for entry in custody_log %}
+      <tr><td>{{ entry.timestamp }}</td><td>{{ entry.get_action_display }}</td><td>{{ entry.actor }}</td><td>{{ entry.note }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-muted" style="font-size:0.85rem;margin-top:1rem">
+    Each row's hash is computed from the row before it. Altering or deleting any
+    past row breaks every hash after it.
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Personnel{% endblock %}
+{% block content %}
+<h1>Personnel roster</h1>
+<table class="card">
+  <thead><tr><th>Name</th><th>Rank</th><th>Station</th><th>Badge #</th></tr></thead>
+  <tbody>
+    {% for officer in officers %}
+    <tr>
+      <td>{{ officer.user.get_full_name|default:officer.user.username }}</td>
+      <td>{{ officer.rank }}</td>
+      <td>{{ officer.station }}</td>
+      <td>{{ officer.user.badge_number }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No active officers on roster.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

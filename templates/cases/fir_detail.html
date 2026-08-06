@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}FIR {{ fir.fir_number }}{% endblock %}
+{% block content %}
+<h1>FIR {{ fir.fir_number }} {% if fir.is_sealed %}<span class="badge sealed">sealed</span>{% endif %}</h1>
+<div class="card">
+  <p><strong>Station:</strong> {{ fir.station }}</p>
+  <p><strong>Sections of law:</strong> {{ fir.sections_of_law }}</p>
+  <p><strong>Filed:</strong> {{ fir.date_filed }} by {{ fir.filed_by }}</p>
+  <p><strong>Complainant:</strong> {{ fir.complainant_name }} ({{ fir.complainant_contact|default:"no contact on file" }})</p>
+  <p><strong>Narrative:</strong><br>{{ fir.narrative|linebreaks }}</p>
+</div>
+
+<div class="card">
+  <h2>Case status</h2>
+  <p>{{ fir.case.get_status_display }}{% if fir.case.assigned_officer %} &middot; assigned to {{ fir.case.assigned_officer }}{% endif %}</p>
+  <p><a class="btn" href="{% url 'cases:case_status' fir.case.pk %}">Update status</a>
+     <a class="btn" href="{% url 'evidence:upload' fir.case.pk %}">Add evidence</a></p>
+</div>
+
+<div class="card">
+  <h2>Evidence</h2>
+  <ul>
+    {% for item in fir.case.evidence_items.all %}
+    <li><a href="{% url 'evidence:detail' item.pk %}">{{ item.description }}</a> -- sha256 {{ item.sha256_hash|slice:":12" }}&hellip;</li>
+    {% empty %}
+    <li>No evidence recorded yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

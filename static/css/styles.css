@@ -1,0 +1,154 @@
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --text: #1a1d23;
+  --text-muted: #5b616e;
+  --border: #d8dce1;
+  --accent: #185fa5;
+  --accent-text: #ffffff;
+  --danger: #a32d2d;
+  --danger-bg: #fcebeb;
+  --success: #3b6d11;
+  --success-bg: #eaf3de;
+  --radius: 8px;
+  --sidenav-width: 220px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a;
+    --surface: #1e2126;
+    --text: #e7e8ea;
+    --text-muted: #9a9fa8;
+    --border: #33373f;
+    --accent: #85b7eb;
+    --accent-text: #042c53;
+    --danger-bg: #501313;
+    --success-bg: #173404;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+.brand { font-weight: 700; }
+.user-chip { margin-left: auto; color: var(--text-muted); font-size: 0.9rem; }
+.nav-toggle-label { display: none; cursor: pointer; font-size: 1.25rem; }
+
+.sidenav {
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  left: 0;
+  width: var(--sidenav-width);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.sidenav a {
+  padding: 0.6rem 1.25rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.sidenav a:hover { background: var(--bg); }
+.nav-logout-form { margin-top: auto; padding: 0.5rem 1.25rem; }
+.nav-logout-form button {
+  background: none; border: none; color: var(--danger); cursor: pointer; padding: 0; font: inherit;
+}
+
+.content {
+  margin-left: var(--sidenav-width);
+  padding: 1.5rem;
+  max-width: 960px;
+}
+
+/* Responsive: collapse the sidenav behind the checkbox-hack toggle on narrow screens -- no JS */
+@media (max-width: 720px) {
+  .nav-toggle-label { display: block; }
+  .sidenav {
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 10;
+  }
+  .nav-toggle:checked ~ .sidenav { transform: translateX(0); }
+  .content { margin-left: 0; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
+th { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.55rem 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+form.stacked label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 600; font-size: 0.9rem; }
+form.stacked input, form.stacked select, form.stacked textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.messages { list-style: none; padding: 0; }
+.message { padding: 0.6rem 1rem; border-radius: var(--radius); margin-bottom: 0.75rem; }
+.message.error { background: var(--danger-bg); color: var(--danger); }
+.message.success { background: var(--success-bg); color: var(--success); }
+
+.badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.8rem; }
+.badge.sealed { background: var(--danger-bg); color: var(--danger); }
+
+.chart-row { display: flex; align-items: center; gap: 0.75rem; margin: 0.4rem 0; }
+.chart-label { width: 160px; font-size: 0.85rem; color: var(--text-muted); }
+.chart-track { flex: 1; background: var(--border); border-radius: 4px; height: 14px; overflow: hidden; }
+.chart-fill { background: var(--accent); height: 100%; }
+.chart-count { width: 2.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Login screens are deliberately centered and chrome-free */
+.auth-page { max-width: 360px; margin: 10vh auto; }
+
+@media print {
+  .topbar, .sidenav, .btn, form { display: none !important; }
+  .content { margin: 0; max-width: none; }
+  body { background: #fff; color: #000; }
+  .card { border: 1px solid #000; }
+}

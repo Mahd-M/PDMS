@@ -1,0 +1,9 @@
+Django==6.0.7
+pyotp==2.9.0
+qrcode==7.4.2
+cryptography==43.0.3
+django-environ==0.14.0
+Pillow==12.3.0
+
+# Uncomment for a PostgreSQL deployment (see docs/DATABASE.md):
+# psycopg2-binary==2.9.9

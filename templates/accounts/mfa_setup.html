@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Set up authenticator{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <h1>Set up your authenticator</h1>
+  <p class="text-muted">CJIS requires a second factor on every account. Scan this code with an authenticator app (Google Authenticator, Authy, etc.), then enter the 6-digit code it shows.</p>
+  <p><img src="{% url 'accounts:mfa_qr' %}" alt="Authenticator enrollment QR code" width="200" height="200"></p>
+  <form method="post" class="stacked">
+    {% csrf_token %}
+    <label for="id_code">Code</label>
+    {{ form.code }}
+    <p style="margin-top:1.25rem"><button type="submit" class="btn">Enable &amp; continue</button></p>
+  </form>
+</div>
+{% endblock %}

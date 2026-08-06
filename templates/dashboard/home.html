@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="card">
+  <p><strong>{{ total_firs }}</strong> FIRs visible to your role &middot; <strong>{{ total_cases }}</strong> open cases</p>
+</div>
+
+<div class="card">
+  <h2>Cases by status</h2>
+  {% for row in status_counts %}
+  <div class="chart-row">
+    <span class="chart-label">{{ row.label }}</span>
+    <span class="chart-track"><span class="chart-fill" style="width: {{ row.bar_width_pct }}%"></span></span>
+    <span class="chart-count">{{ row.count }}</span>
+  </div>
+  {% endfor %}
+  <p class="text-muted" style="font-size:0.85rem;margin-top:1rem">
+    Rendered entirely server-side on every page load -- no charting library, no client script.
+  </p>
+</div>
+
+<p><a class="btn" href="{% url 'cases:fir_list' %}">Go to FIRs &amp; cases</a></p>
+{% endblock %}

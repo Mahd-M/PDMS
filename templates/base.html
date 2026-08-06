@@ -1,0 +1,38 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PDMS{% endblock %} · Police Department Management System</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  {% if request.user.is_authenticated %}
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
+  <header class="topbar">
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu">&#9776;</label>
+    <span class="brand">PDMS</span>
+    <span class="user-chip">{{ request.user }} &middot; {{ request.user.get_role_display }}</span>
+  </header>
+  <nav class="sidenav">
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+    <a href="{% url 'cases:fir_list' %}">FIRs &amp; cases</a>
+    <a href="{% url 'personnel:roster' %}">Personnel</a>
+    {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin / audit log</a>{% endif %}
+    <form action="{% url 'accounts:logout' %}" method="post" class="nav-logout-form">
+      {% csrf_token %}
+      <button type="submit">Log out</button>
+    </form>
+  </nav>
+  {% endif %}
+
+  <main class="content">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}<li class="message {{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
