@@ -23,7 +23,7 @@ def home(request):
         status_counts.append({
             "label": label,
             "count": count,
-            "bar_width_pct": round(100 * count / total),
+            "bar_width_pct": round(100 * count / total / 5) * 5,
         })
 
     return render(request, "dashboard/home.html", {

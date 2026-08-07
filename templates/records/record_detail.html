@@ -10,7 +10,7 @@
     <img
       src="{{ record.photo.url }}"
       alt="Photo of {{ record.full_name }}"
-      style="max-width: 200px; border-radius: 8px"
+      class="record-photo"
     />
   </p>
   {% endif %}
@@ -59,7 +59,7 @@
       {% endfor %}
     </tbody>
   </table>
-  <p style="margin-top: 1.25rem">
+  <p class="form-actions">
     <a class="btn" href="{% url 'records:court_date_create' record.pk %}"
       >Add court date</a
     >
