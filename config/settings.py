@@ -7,6 +7,8 @@ docs/CJIS_MAPPING.md for the full control-by-control writeup.
 """
 from pathlib import Path
 
+import dj_database_url
+
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,11 +77,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 # SQLite here purely so the repo runs out of the box for a demo/pilot.
 # Production target is PostgreSQL with Row-Level Security + pgcrypto +
 # pgAudit enabled -- see docs/DATABASE.md for the DDL and rationale.
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        env="DATABASE_URL",
+    )
 }
 
 # Identification & Authentication -- CJIS Policy Area 6
