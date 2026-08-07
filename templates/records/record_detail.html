@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %}{{ record.full_name }}{% endblock %}
+{% block content %}
+<h1>
+  {{ record.full_name }}{% if record.status == "wanted" %}
+  <span class="badge sealed">wanted</span>{% endif %}
+</h1>
+<div class="card">
+  {% if record.photo %}
+  <p>
+    <img
+      src="{{ record.photo.url }}"
+      alt="Photo of {{ record.full_name }}"
+      style="max-width: 200px; border-radius: 8px"
+    />
+  </p>
+  {% endif %}
+  <p><strong>CNIC:</strong> {{ record.cnic|default:"not on file" }}</p>
+  <p><strong>Aliases:</strong> {{ record.aliases|default:"none on file" }}</p>
+  <p>
+    <strong>Fingerprint ID:</strong> {{ record.fingerprint_id|default:"not on
+    file" }}
+  </p>
+  <p><strong>Status:</strong> {{ record.get_status_display }}</p>
+  <p>
+    <strong>Charges:</strong><br />{{ record.charges|default:"none on
+    file"|linebreaks }}
+  </p>
+  <p><strong>Notes:</strong><br />{{ record.notes|default:"--"|linebreaks }}</p>
+  <p>
+    <a class="btn" href="{% url 'records:record_edit' record.pk %}"
+      >Edit record</a
+    >
+  </p>
+</div>
+
+<div class="card">
+  <h2>Court dates</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Court</th>
+        <th>Outcome</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cd in record.court_dates.all %}
+      <tr>
+        <td>{{ cd.date }}</td>
+        <td>{{ cd.court_name }}</td>
+        <td>{{ cd.outcome|default:"pending" }}</td>
+        <td><a href="{% url 'records:court_date_edit' cd.pk %}">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No court dates recorded yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p style="margin-top: 1.25rem">
+    <a class="btn" href="{% url 'records:court_date_create' record.pk %}"
+      >Add court date</a
+    >
+  </p>
+</div>
+{% endblock %}

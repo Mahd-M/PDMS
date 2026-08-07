@@ -17,6 +17,7 @@
   <nav class="sidenav">
     <a href="{% url 'dashboard:home' %}">Dashboard</a>
     <a href="{% url 'cases:fir_list' %}">FIRs &amp; cases</a>
+    <a href="{% url 'records:record_list' %}">Criminal records</a>
     <a href="{% url 'personnel:roster' %}">Personnel</a>
     {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin / audit log</a>{% endif %}
     <form action="{% url 'accounts:logout' %}" method="post" class="nav-logout-form">

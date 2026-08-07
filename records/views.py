@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import Role
 from audit.models import AuditLog
-from .forms import CriminalRecordForm
-from .models import CriminalRecord
+from .forms import CourtDateForm, CriminalRecordForm
+from .models import CourtDate, CriminalRecord
 
 # Who can create or edit a criminal record -- see note above this file
 # in the roadmap chat for why this differs from cases/views.py::fir_create's role set.
@@ -59,3 +59,41 @@ def record_edit(request, pk):
         )
         return redirect("records:record_detail", pk=record.pk)
     return render(request, "records/record_form.html", {"form": form, "record": record})
+
+
+@login_required
+def court_date_create(request, record_pk):
+    record = get_object_or_404(CriminalRecord, pk=record_pk)
+    if request.user.role not in EDITOR_ROLES:
+        return redirect("records:record_detail", pk=record.pk)
+    form = CourtDateForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        court_date = form.save(commit=False)
+        court_date.criminal_record = record
+        court_date.save()
+        AuditLog.objects.create(
+            user=request.user, action=AuditLog.Action.CREATE, object_type="CourtDate",
+            object_id=str(court_date.pk), ip_address=request.META.get("REMOTE_ADDR"),
+        )
+        return redirect("records:record_detail", pk=record.pk)
+    return render(request, "records/court_date_form.html", {"form": form, "record": record})
+
+
+@login_required
+def court_date_edit(request, pk):
+    court_date = get_object_or_404(CourtDate, pk=pk)
+    record = court_date.criminal_record
+    if request.user.role not in EDITOR_ROLES:
+        return redirect("records:record_detail", pk=record.pk)
+    form = CourtDateForm(request.POST or None, instance=court_date)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        AuditLog.objects.create(
+            user=request.user, action=AuditLog.Action.UPDATE, object_type="CourtDate",
+            object_id=str(court_date.pk), ip_address=request.META.get("REMOTE_ADDR"),
+        )
+        return redirect("records:record_detail", pk=record.pk)
+    return render(
+        request, "records/court_date_form.html",
+        {"form": form, "record": record, "court_date": court_date},
+    )
