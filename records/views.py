@@ -7,7 +7,7 @@ from audit.models import AuditLog
 from .forms import CourtDateForm, CriminalRecordForm
 from .models import CourtDate, CriminalRecord
 
-SEDITOR_ROLES = (Role.ADMIN, Role.SHO, Role.INVESTIGATOR)
+EDITOR_ROLES = (Role.ADMIN, Role.SHO, Role.INVESTIGATOR)
 
 @login_required
 def wanted_list(request):
