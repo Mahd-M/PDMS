@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Wanted criminals{% endblock %}
+{% block content %}
+<h1>Wanted criminals</h1>
+<table class="card">
+  <thead>
+    <tr><th>Name</th><th>Aliases</th><th>Fingerprint ID</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for record in page %}
+    <tr>
+      <td>{{ record.full_name }} <span class="badge sealed">wanted</span></td>
+      <td>{{ record.aliases|default:"--" }}</td>
+      <td>{{ record.fingerprint_id|default:"--" }}</td>
+      <td><a href="{% url 'records:record_detail' record.pk %}">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No wanted criminals on file right now.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page.has_other_pages %}
+<p class="card">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">&laquo; Prev</a>{% endif %}
+  Page {{ page.number }} of {{ page.paginator.num_pages }}
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next &raquo;</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

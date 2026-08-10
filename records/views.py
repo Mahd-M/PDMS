@@ -7,10 +7,13 @@ from audit.models import AuditLog
 from .forms import CourtDateForm, CriminalRecordForm
 from .models import CourtDate, CriminalRecord
 
-# Who can create or edit a criminal record -- see note above this file
-# in the roadmap chat for why this differs from cases/views.py::fir_create's role set.
-EDITOR_ROLES = (Role.ADMIN, Role.SHO, Role.INVESTIGATOR)
+SEDITOR_ROLES = (Role.ADMIN, Role.SHO, Role.INVESTIGATOR)
 
+@login_required
+def wanted_list(request):
+    records = CriminalRecord.objects.filter(status=CriminalRecord.Status.WANTED)
+    page = Paginator(records, 20).get_page(request.GET.get("page"))
+    return render(request, "records/wanted_list.html", {"page": page})
 
 @login_required
 def record_list(request):
