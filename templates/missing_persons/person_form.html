@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{% if person %}Edit report{% else %}Report missing person{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if person %}Edit report &mdash; {{ person.full_name }}{% else %}Report missing person{% endif %}</h1>
+<form method="post" enctype="multipart/form-data" class="stacked card">
+  {% csrf_token %}
+  {% for field in form %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+  {% endfor %}
+  <p class="form-actions"><button type="submit" class="btn">{% if person %}Save changes{% else %}Save report{% endif %}</button></p>
+</form>
+{% endblock %}

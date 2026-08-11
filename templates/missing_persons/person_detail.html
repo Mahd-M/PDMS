@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ person.full_name }}{% endblock %}
+{% block content %}
+<h1>{{ person.full_name }}{% if person.status == "missing" %} <span class="badge sealed">missing</span>{% endif %}</h1>
+<div class="card">
+  {% if person.photo %}<p><img src="{{ person.photo.url }}" alt="Photo of {{ person.full_name }}" class="record-photo"></p>{% endif %}
+  <p><strong>Status:</strong> {{ person.get_status_display }}</p>
+  <p><strong>Last seen:</strong> {{ person.last_seen_date }} &middot; {{ person.last_seen_location }}</p>
+  <p><strong>Description:</strong><br>{{ person.description|default:"none on file"|linebreaks }}</p>
+  <p><strong>Reporting relative:</strong> {{ person.reporting_relative_name }} ({{ person.reporting_relative_contact|default:"no contact on file" }})</p>
+  <p><a class="btn" href="{% url 'missing_persons:person_edit' person.pk %}">Edit report</a></p>
+  <p class="helper-text">Reporting relative's name and contact details are encrypted at rest, same as an FIR's complainant fields.</p>
+</div>
+{% endblock %}

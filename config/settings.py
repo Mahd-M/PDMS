@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "personnel",
     "dashboard",
     "records",
+    "missing_persons",
 ]
 
 MIDDLEWARE = [
