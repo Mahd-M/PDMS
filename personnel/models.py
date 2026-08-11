@@ -21,3 +21,30 @@ class Officer(models.Model):
 
     def __str__(self):
         return f"{self.rank} {self.user.get_full_name() or self.user.username} -- {self.station}"
+
+
+class OfficerAttendance(models.Model):
+    """
+    One row per officer per day. `marked_by` records who took
+    attendance -- not the officer being marked -- same accountability
+    idea as `Evidence.uploaded_by` or `FIR.filed_by`.
+    """
+
+    class Status(models.TextChoices):
+        PRESENT = "present", "Present"
+        ABSENT = "absent", "Absent"
+        LEAVE = "leave", "Leave"
+
+    officer = models.ForeignKey(Officer, on_delete=models.CASCADE, related_name="attendance_records")
+    date = models.DateField()
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PRESENT)
+    marked_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="attendance_marked")
+
+    class Meta:
+        ordering = ["-date", "officer__station"]
+        constraints = [
+            models.UniqueConstraint(fields=["officer", "date"], name="unique_attendance_per_officer_per_day"),
+        ]
+
+    def __str__(self):
+        return f"{self.officer} -- {self.date} -- {self.get_status_display()}"

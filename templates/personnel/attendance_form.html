@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Officer attendance{% endblock %}
+{% block content %}
+<h1>Officer attendance</h1>
+
+<form method="get" class="stacked card">
+  <label for="id_date">Date</label>
+  <input type="date" id="id_date" name="date" value="{{ selected_date }}">
+  <p class="form-actions"><button type="submit" class="btn">Load</button></p>
+</form>
+
+<form method="post" class="card">
+  {% csrf_token %}
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <table>
+    <thead>
+      <tr>
+        <th>Officer</th><th>Station</th>
+        {% for value, label in status_choices %}<th>{{ label }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.officer.user.get_full_name|default:row.officer.user.username }}</td>
+        <td>{{ row.officer.station }}</td>
+        {% for value, label in status_choices %}
+        <td><input type="radio" name="status_{{ row.officer.pk }}" value="{{ value }}" {% if row.current_status == value %}checked{% endif %}></td>
+        {% endfor %}
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No active officers to mark.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="form-actions"><button type="submit" class="btn">Save attendance</button></p>
+</form>
+{% endblock %}
