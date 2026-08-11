@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from accounts.models import Role
 from audit.models import AuditLog
-from .models import Officer, OfficerAttendance
+from .forms import AssignmentForm
+from .models import Assignment, Officer, OfficerAttendance
 
-ATTENDANCE_MARKER_ROLES = (Role.ADMIN, Role.SHO)
+# Covers both attendance-marking (Step 26) and assignment editing (Step 27) --
+# renamed from ATTENDANCE_MARKER_ROLES now that a second view needs the same gate.
+SUPERVISOR_ROLES = (Role.ADMIN, Role.SHO)
 
 
 @login_required
@@ -16,8 +19,15 @@ def roster(request):
 
 
 @login_required
+def officer_detail(request, pk):
+    officer = get_object_or_404(Officer.objects.select_related("user"), pk=pk)
+    assignments = officer.assignments.all()
+    return render(request, "personnel/officer_detail.html", {"officer": officer, "assignments": assignments})
+
+
+@login_required
 def mark_attendance(request):
-    if request.user.role not in ATTENDANCE_MARKER_ROLES:
+    if request.user.role not in SUPERVISOR_ROLES:
         return redirect("personnel:roster")
 
     if request.method == "POST":
@@ -46,3 +56,38 @@ def mark_attendance(request):
         "selected_date": selected_date,
         "status_choices": OfficerAttendance.Status.choices,
     })
+
+
+@login_required
+def assignment_create(request, officer_pk):
+    officer = get_object_or_404(Officer, pk=officer_pk)
+    if request.user.role not in SUPERVISOR_ROLES:
+        return redirect("personnel:officer_detail", pk=officer.pk)
+    form = AssignmentForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        assignment = form.save(commit=False)
+        assignment.officer = officer
+        assignment.save()
+        AuditLog.objects.create(
+            user=request.user, action=AuditLog.Action.CREATE, object_type="Assignment",
+            object_id=str(assignment.pk), ip_address=request.META.get("REMOTE_ADDR"),
+        )
+        return redirect("personnel:officer_detail", pk=officer.pk)
+    return render(request, "personnel/assignment_form.html", {"form": form, "officer": officer})
+
+
+@login_required
+def assignment_edit(request, pk):
+    assignment = get_object_or_404(Assignment, pk=pk)
+    officer = assignment.officer
+    if request.user.role not in SUPERVISOR_ROLES:
+        return redirect("personnel:officer_detail", pk=officer.pk)
+    form = AssignmentForm(request.POST or None, instance=assignment)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        AuditLog.objects.create(
+            user=request.user, action=AuditLog.Action.UPDATE, object_type="Assignment",
+            object_id=str(assignment.pk), ip_address=request.META.get("REMOTE_ADDR"),
+        )
+        return redirect("personnel:officer_detail", pk=officer.pk)
+    return render(request, "personnel/assignment_form.html", {"form": form, "officer": officer, "assignment": assignment})

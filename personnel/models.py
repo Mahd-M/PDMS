@@ -48,3 +48,23 @@ class OfficerAttendance(models.Model):
 
     def __str__(self):
         return f"{self.officer} -- {self.date} -- {self.get_status_display()}"
+
+
+class Assignment(models.Model):
+    """
+    A duty assignment for an officer. `end_date` is nullable, not a
+    sentinel value like "TBD" -- an ongoing assignment genuinely has
+    no end date yet, and NULL is what SQL means by that.
+    """
+
+    officer = models.ForeignKey(Officer, on_delete=models.CASCADE, related_name="assignments")
+    description = models.CharField(max_length=255)
+    station = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-start_date"]
+
+    def __str__(self):
+        return f"{self.officer} -- {self.description} ({self.station})"
