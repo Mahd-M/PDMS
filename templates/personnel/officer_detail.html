@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ officer.user.get_full_name|default:officer.user.username }}{% endblock %}
+{% block content %}
+<h1>{{ officer.user.get_full_name|default:officer.user.username }}</h1>
+<div class="card">
+  <p><strong>Rank:</strong> {{ officer.rank }}</p>
+  <p><strong>Station:</strong> {{ officer.station }}</p>
+  <p><strong>Department:</strong> {{ officer.department|default:"--" }}</p>
+  <p><strong>Shift:</strong> {{ officer.get_shift_display|default:"--" }}</p>
+  <p><strong>Contact:</strong> {{ officer.contact_number|default:"--" }}</p>
+  <p><strong>Badge #:</strong> {{ officer.user.badge_number|default:"--" }}</p>
+  <p><strong>Joined force:</strong> {{ officer.date_joined_force|default:"--" }}</p>
+</div>
+
+<div class="card">
+  <h2>Assignments</h2>
+  <table>
+    <thead><tr><th>Description</th><th>Station</th><th>Start</th><th>End</th><th></th></tr></thead>
+    <tbody>
+      {% for a in assignments %}
+      <tr>
+        <td>{{ a.description }}</td>
+        <td>{{ a.station }}</td>
+        <td>{{ a.start_date }}</td>
+        <td>{{ a.end_date|default:"ongoing" }}</td>
+        <td><a href="{% url 'personnel:assignment_edit' a.pk %}">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No assignments recorded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="form-actions"><a class="btn" href="{% url 'personnel:assignment_create' officer.pk %}">Add assignment</a></p>
+</div>
+{% endblock %}

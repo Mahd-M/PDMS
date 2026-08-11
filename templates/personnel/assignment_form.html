@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{% if assignment %}Edit assignment{% else %}Add assignment{% endif %} &mdash; {{ officer.user.get_full_name|default:officer.user.username }}{% endblock %}
+{% block content %}
+<h1>{% if assignment %}Edit assignment{% else %}Add assignment{% endif %} &mdash; {{ officer.user.get_full_name|default:officer.user.username }}</h1>
+<form method="post" class="stacked card">
+  {% csrf_token %}
+  {% for field in form %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+  {% endfor %}
+  <p class="form-actions">
+    <button type="submit" class="btn">{% if assignment %}Save changes{% else %}Save assignment{% endif %}</button>
+    <a href="{% url 'personnel:officer_detail' officer.pk %}">Cancel</a>
+  </p>
+</form>
+{% endblock %}
