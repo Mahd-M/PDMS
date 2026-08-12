@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "dashboard",
     "records",
     "missing_persons",
+    "vehicles",
 ]
 
 MIDDLEWARE = [
