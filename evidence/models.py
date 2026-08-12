@@ -19,8 +19,16 @@ class Evidence(models.Model):
     value, the file has been altered or corrupted, which is exactly
     what a chain-of-custody check needs to catch.
     """
+    class EvidenceType(models.TextChoices):
+        PHOTO = "photo", "Photo"
+        VIDEO = "video", "Video"
+        DNA = "dna", "DNA"
+        DOCUMENT = "document", "Document"
+
     case = models.ForeignKey(Case, on_delete=models.PROTECT, related_name="evidence_items")
     description = models.CharField(max_length=255)
+    evidence_type = models.CharField(max_length=20, choices=EvidenceType.choices, default=EvidenceType.PHOTO)
+    storage_location = models.CharField(max_length=255, blank=True, default="")
     file = models.FileField(upload_to=evidence_upload_path)
     sha256_hash = models.CharField(max_length=64, editable=False)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
