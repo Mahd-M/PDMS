@@ -12,16 +12,31 @@ from .models import Vehicle
 EDITOR_ROLES = (Role.ADMIN, Role.SHO, Role.INVESTIGATOR)
 
 
+def visible_vehicles_for(user):
+    """
+    Mirrors cases.views.visible_firs_for: a vehicle linked to a case is
+    exactly as sensitive as that case's FIR, so a role that can't see a
+    sealed FIR directly must not see it leak through the vehicle either.
+    Vehicles with no case at all carry no such sensitivity.
+    """
+    qs = Vehicle.objects.all()
+    if user.role in (Role.ADMIN, Role.AUDITOR, Role.SHO):
+        return qs
+    if user.role == Role.INVESTIGATOR:
+        return qs.exclude(case__fir__is_sealed=True) | qs.filter(case__assigned_officer=user)
+    return qs.exclude(case__fir__is_sealed=True)
+
+
 @login_required
 def vehicle_list(request):
-    vehicles = Vehicle.objects.all()
+    vehicles = visible_vehicles_for(request.user)
     page = Paginator(vehicles, 20).get_page(request.GET.get("page"))
     return render(request, "vehicles/vehicle_list.html", {"page": page})
 
 
 @login_required
 def vehicle_detail(request, pk):
-    vehicle = get_object_or_404(Vehicle, pk=pk)
+    vehicle = get_object_or_404(visible_vehicles_for(request.user), pk=pk)
     AuditLog.objects.create(
         user=request.user, action=AuditLog.Action.VIEW, object_type="Vehicle",
         object_id=vehicle.registration_number, ip_address=request.META.get("REMOTE_ADDR"),
@@ -33,7 +48,7 @@ def vehicle_detail(request, pk):
 def vehicle_create(request):
     if request.user.role not in EDITOR_ROLES:
         return redirect("vehicles:vehicle_list")
-    form = VehicleForm(request.POST or None)
+    form = VehicleForm(request.POST or None, user=request.user)
     if request.method == "POST" and form.is_valid():
         vehicle = form.save()
         AuditLog.objects.create(
@@ -46,10 +61,10 @@ def vehicle_create(request):
 
 @login_required
 def vehicle_edit(request, pk):
-    vehicle = get_object_or_404(Vehicle, pk=pk)
+    vehicle = get_object_or_404(visible_vehicles_for(request.user), pk=pk)
     if request.user.role not in EDITOR_ROLES:
         return redirect("vehicles:vehicle_detail", pk=vehicle.pk)
-    form = VehicleForm(request.POST or None, instance=vehicle)
+    form = VehicleForm(request.POST or None, instance=vehicle, user=request.user)
     if request.method == "POST" and form.is_valid():
         form.save()
         AuditLog.objects.create(
