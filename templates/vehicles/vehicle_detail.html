@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ vehicle.registration_number }}{% endblock %}
+{% block content %}
+<h1>{{ vehicle.registration_number }}{% if vehicle.status == "wanted" %} <span class="badge sealed">wanted</span>{% endif %}</h1>
+<div class="card">
+  <p><strong>Make/Model:</strong> {{ vehicle.make }} {{ vehicle.model }}</p>
+  <p><strong>Owner:</strong> {{ vehicle.owner_name }} ({{ vehicle.owner_contact|default:"no contact on file" }})</p>
+  <p><strong>Status:</strong> {{ vehicle.get_status_display }}</p>
+  <p><strong>Linked case:</strong> {% if vehicle.case %}<a href="{% url 'cases:fir_detail' vehicle.case.fir.pk %}">{{ vehicle.case.fir.fir_number }}</a>{% else %}not linked to a case{% endif %}</p>
+  <p><a class="btn" href="{% url 'vehicles:vehicle_edit' vehicle.pk %}">Edit vehicle</a></p>
+</div>
+{% endblock %}

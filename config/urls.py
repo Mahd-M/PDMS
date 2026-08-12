@@ -14,6 +14,7 @@ urlpatterns = [
     path("personnel/", include("personnel.urls")),
     path("records/", include("records.urls")),
     path("missing-persons/", include("missing_persons.urls")),
+    path("vehicles/", include("vehicles.urls")),
 ]
 
 if settings.DEBUG:

@@ -27,4 +27,15 @@
     {% endfor %}
   </ul>
 </div>
+
+<div class="card">
+  <h2>Vehicles</h2>
+  <ul>
+    {% for vehicle in fir.case.vehicles.all %}
+    <li><a href="{% url 'vehicles:vehicle_detail' vehicle.pk %}">{{ vehicle.registration_number }}</a> -- {{ vehicle.make }} {{ vehicle.model }}{% if vehicle.status == "wanted" %} <span class="badge sealed">wanted</span>{% endif %}</li>
+    {% empty %}
+    <li>No vehicles linked to this case.</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

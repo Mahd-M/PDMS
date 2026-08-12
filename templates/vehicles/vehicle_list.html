@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Vehicles{% endblock %}
+{% block content %}
+<h1>Vehicles</h1>
+<p><a class="btn" href="{% url 'vehicles:vehicle_create' %}">Add vehicle</a></p>
+<table class="card">
+  <thead><tr><th>Registration</th><th>Make/Model</th><th>Status</th><th>Case</th><th></th></tr></thead>
+  <tbody>
+    {% for vehicle in page %}
+    <tr>
+      <td>{{ vehicle.registration_number }}</td>
+      <td>{{ vehicle.make }} {{ vehicle.model }}</td>
+      <td>{{ vehicle.get_status_display }}{% if vehicle.status == "wanted" %} <span class="badge sealed">wanted</span>{% endif %}</td>
+      <td>{% if vehicle.case %}<a href="{% url 'cases:fir_detail' vehicle.case.fir.pk %}">{{ vehicle.case.fir.fir_number }}</a>{% else %}--{% endif %}</td>
+      <td><a href="{% url 'vehicles:vehicle_detail' vehicle.pk %}">View</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No vehicles on file yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if page.has_other_pages %}
+<p class="card">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">&laquo; Prev</a>{% endif %}
+  Page {{ page.number }} of {{ page.paginator.num_pages }}
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next &raquo;</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

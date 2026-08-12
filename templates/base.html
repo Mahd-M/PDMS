@@ -22,6 +22,7 @@
     <a href="{% url 'personnel:roster' %}">Personnel</a>
     <a href="{% url 'personnel:mark_attendance' %}">Officer attendance</a>
     <a href="{% url 'missing_persons:person_list' %}">Missing persons</a>
+    <a href="{% url 'vehicles:vehicle_list' %}">Vehicles</a>
     {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin / audit log</a>{% endif %}
     <form action="{% url 'accounts:logout' %}" method="post" class="nav-logout-form">
       {% csrf_token %}

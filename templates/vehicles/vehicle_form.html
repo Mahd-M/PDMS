@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{% if vehicle %}Edit vehicle{% else %}Add vehicle{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if vehicle %}Edit vehicle &mdash; {{ vehicle.registration_number }}{% else %}Add vehicle{% endif %}</h1>
+<form method="post" class="stacked card">
+  {% csrf_token %}
+  {% for field in form %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+  {% endfor %}
+  <p class="form-actions"><button type="submit" class="btn">{% if vehicle %}Save changes{% else %}Save vehicle{% endif %}</button></p>
+</form>
+{% endblock %}
