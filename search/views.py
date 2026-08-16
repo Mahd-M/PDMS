@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models import Q
 from django.shortcuts import render
 
 from cases.views import visible_firs_for
@@ -13,13 +15,30 @@ def search_results(request):
     results = {"firs": [], "criminal_records": [], "vehicles": [], "missing_persons": []}
 
     if q:
-        # FIR number and vehicle registration are plain, indexed columns --
-        # a normal database-level filter, going through the same
-        # visible_firs_for / visible_vehicles_for row-level security every
-        # other view in these apps uses, so search can't leak a sealed FIR
-        # or a vehicle tied to one.
-        results["firs"] = list(visible_firs_for(request.user).filter(fir_number__icontains=q))
-        results["vehicles"] = list(visible_vehicles_for(request.user).filter(registration_number__icontains=q))
+        # fir_number/registration_number are identifiers, not prose -- full-text
+        # search tokenizes into lexemes, which breaks substring matching (e.g.
+        # "2026-0000" against "FIR-2026-000001"), so those two stay on icontains.
+        # station/sections_of_law/narrative and make/model are genuine free text,
+        # so those get real Postgres full-text search, ranked and OR'd with the
+        # icontains branch. Both go through visible_firs_for/visible_vehicles_for
+        # so search can't leak a sealed FIR or a vehicle tied to one.
+        query = SearchQuery(q)
+
+        fir_vector = SearchVector("station", "sections_of_law", "narrative")
+        results["firs"] = list(
+            visible_firs_for(request.user)
+            .annotate(search=fir_vector, rank=SearchRank(fir_vector, query))
+            .filter(Q(fir_number__icontains=q) | Q(search=query))
+            .order_by("-rank")
+        )
+
+        vehicle_vector = SearchVector("make", "model")
+        results["vehicles"] = list(
+            visible_vehicles_for(request.user)
+            .annotate(search=vehicle_vector, rank=SearchRank(vehicle_vector, query))
+            .filter(Q(registration_number__icontains=q) | Q(search=query))
+            .order_by("-rank")
+        )
 
         # full_name / cnic are encrypted at rest (config/encrypted_fields.py).
         # Fernet ciphertext can't be matched with a database-level icontains --

@@ -7,7 +7,10 @@
   <h2>FIRs</h2>
   <ul>
     {% for fir in results.firs %}
-    <li><a href="{% url 'cases:fir_detail' fir.pk %}">{{ fir.fir_number }}</a> -- {{ fir.station }}{% if fir.is_sealed %} <span class="badge sealed">sealed</span>{% endif %}</li>
+    <li>
+      <a href="{% url 'cases:fir_detail' fir.pk %}">{{ fir.fir_number }}</a> -- {{ fir.station }}{% if fir.is_sealed %} <span class="badge sealed">sealed</span>{% endif %}
+      <br><span class="helper-text">{{ fir.narrative|truncatewords:20 }}</span>
+    </li>
     {% empty %}
     <li>{% if q %}No matching FIRs.{% else %}Enter a search term above.{% endif %}</li>
     {% endfor %}
