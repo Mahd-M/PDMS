@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h1>Search results{% if q %} for &ldquo;{{ q }}&rdquo;{% endif %}</h1>
+
+<div class="card">
+  <h2>FIRs</h2>
+  <ul>
+    {% for fir in results.firs %}
+    <li><a href="{% url 'cases:fir_detail' fir.pk %}">{{ fir.fir_number }}</a> -- {{ fir.station }}{% if fir.is_sealed %} <span class="badge sealed">sealed</span>{% endif %}</li>
+    {% empty %}
+    <li>{% if q %}No matching FIRs.{% else %}Enter a search term above.{% endif %}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Criminal records</h2>
+  <ul>
+    {% for record in results.criminal_records %}
+    <li><a href="{% url 'records:record_detail' record.pk %}">{{ record.full_name }}</a> -- {{ record.get_status_display }}</li>
+    {% empty %}
+    <li>{% if q %}No matching criminal records.{% else %}Enter a search term above.{% endif %}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Vehicles</h2>
+  <ul>
+    {% for vehicle in results.vehicles %}
+    <li><a href="{% url 'vehicles:vehicle_detail' vehicle.pk %}">{{ vehicle.registration_number }}</a> -- {{ vehicle.make }} {{ vehicle.model }}{% if vehicle.status == "wanted" %} <span class="badge sealed">wanted</span>{% endif %}</li>
+    {% empty %}
+    <li>{% if q %}No matching vehicles.{% else %}Enter a search term above.{% endif %}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Missing persons</h2>
+  <ul>
+    {% for person in results.missing_persons %}
+    <li><a href="{% url 'missing_persons:person_detail' person.pk %}">{{ person.full_name }}</a> -- {{ person.get_status_display }}</li>
+    {% empty %}
+    <li>{% if q %}No matching missing persons.{% else %}Enter a search term above.{% endif %}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

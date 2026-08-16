@@ -15,6 +15,11 @@
     <span class="user-chip">{{ request.user }} &middot; {{ request.user.get_role_display }}</span>
   </header>
   <nav class="sidenav">
+    <form method="get" action="{% url 'search:results' %}" class="nav-search-form">
+      <label for="id_nav_search" class="sr-only">Search FIRs, records, vehicles, missing persons</label>
+      <input type="text" id="id_nav_search" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+      <button type="submit">Go</button>
+    </form>
     <a href="{% url 'dashboard:home' %}">Dashboard</a>
     <a href="{% url 'cases:fir_list' %}">FIRs &amp; cases</a>
     <a href="{% url 'records:record_list' %}">Criminal records</a>
