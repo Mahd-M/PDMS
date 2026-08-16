@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Crime statistics{% endblock %}
+{% block content %}
+<h1>Crime statistics</h1>
+<p class="helper-text">{{ start|date:"d M Y" }} &ndash; {{ end|date:"d M Y" }} &middot; {{ total }} FIR(s) in range</p>
+
+{% include "reports/_date_range_form.html" %}
+
+<div class="card">
+  <table>
+    <thead><tr><th>Section(s) of law</th><th>Count</th></tr></thead>
+    <tbody>
+      {% for row in by_section %}
+      <tr><td>{{ row.sections_of_law|default:"not recorded" }}</td><td>{{ row.count }}</td></tr>
+      {% empty %}
+      <tr><td colspan="2">No FIRs filed in this date range.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="helper-text">To save this report as a PDF, use your browser's Print option (Ctrl+P / Cmd+P) and choose "Save as PDF."</p>
+{% endblock %}

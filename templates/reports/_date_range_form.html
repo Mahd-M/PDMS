@@ -1,0 +1,7 @@
+<form method="get" class="stacked card">
+  <label for="id_start">From</label>
+  <input type="date" id="id_start" name="start" value="{{ start|date:'Y-m-d' }}">
+  <label for="id_end">To</label>
+  <input type="date" id="id_end" name="end" value="{{ end|date:'Y-m-d' }}">
+  <p class="form-actions"><button type="submit" class="btn">Update range</button></p>
+</form>

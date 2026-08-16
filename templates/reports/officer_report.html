@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Officer report{% endblock %}
+{% block content %}
+<h1>Officer report</h1>
+<p class="helper-text">{{ start|date:"d M Y" }} &ndash; {{ end|date:"d M Y" }} &middot; {{ total_assigned }} case(s) with an assigned officer in range</p>
+
+{% include "reports/_date_range_form.html" %}
+
+<div class="card">
+  <table>
+    <thead><tr><th>Officer</th><th>Rank</th><th>Station</th><th>Cases assigned</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.assigned_officer__first_name }} {{ row.assigned_officer__last_name }}</td>
+        <td>{{ row.assigned_officer__officer_profile__rank|default:"--" }}</td>
+        <td>{{ row.assigned_officer__officer_profile__station|default:"--" }}</td>
+        <td>{{ row.case_count }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No cases assigned to an officer in this date range.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="helper-text">To save this report as a PDF, use your browser's Print option (Ctrl+P / Cmd+P) and choose "Save as PDF."</p>
+{% endblock %}

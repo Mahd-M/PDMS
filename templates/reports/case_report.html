@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Case report{% endblock %}
+{% block content %}
+<h1>Case report</h1>
+<p class="helper-text">{{ start|date:"d M Y" }} &ndash; {{ end|date:"d M Y" }} &middot; {{ total }} case(s) in range</p>
+
+{% include "reports/_date_range_form.html" %}
+
+<div class="card">
+  {% for row in status_counts %}
+  <div class="chart-row">
+    <span class="chart-label">{{ row.label }}</span>
+    <span class="chart-track"><span class="chart-fill w-{{ row.bar_width_pct }}"></span></span>
+    <span class="chart-count">{{ row.count }}</span>
+  </div>
+  {% endfor %}
+</div>
+
+<p class="helper-text">To save this report as a PDF, use your browser's Print option (Ctrl+P / Cmd+P) and choose "Save as PDF."</p>
+{% endblock %}

@@ -20,5 +20,31 @@
   </p>
 </div>
 
+<div class="card">
+  <h2>Recent FIRs</h2>
+  <ul>
+    {% for fir in recent_firs %}
+    <li>
+      <a href="{% url 'cases:fir_detail' fir.pk %}">{{ fir.fir_number }}</a>
+      -- {{ fir.station }}, {{ fir.date_filed|date:"d M Y" }}
+      {% if fir.is_sealed %}<span class="badge sealed">sealed</span>{% endif %}
+    </li>
+    {% empty %}
+    <li>No FIRs on file yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Officer attendance today ({{ attendance_today.date|date:"d M Y" }})</h2>
+  <p>
+    <strong>{{ attendance_today.present }}</strong> present &middot;
+    <strong>{{ attendance_today.absent }}</strong> absent &middot;
+    <strong>{{ attendance_today.leave }}</strong> on leave &middot;
+    <strong>{{ attendance_today.not_marked }}</strong> not yet marked
+  </p>
+  <p><a class="btn" href="{% url 'personnel:mark_attendance' %}">Mark attendance</a></p>
+</div>
+
 <p><a class="btn" href="{% url 'cases:fir_list' %}">Go to FIRs &amp; cases</a></p>
 {% endblock %}

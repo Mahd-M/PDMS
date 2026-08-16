@@ -210,4 +210,5 @@ form.stacked input, form.stacked select, form.stacked textarea {
   .content { margin: 0; max-width: none; }
   body { background: #fff; color: #000; }
   .card { border: 1px solid #000; }
+  .chart-fill, .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

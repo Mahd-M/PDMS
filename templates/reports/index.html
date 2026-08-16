@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+<div class="card">
+  <ul>
+    <li><a href="{% url 'reports:crime_statistics' %}">Crime statistics</a> -- FIR counts by section of law, over a date range</li>
+    <li><a href="{% url 'reports:monthly_report' %}">Monthly report</a> -- FIRs filed per month, over a date range</li>
+    <li><a href="{% url 'reports:officer_report' %}">Officer report</a> -- cases assigned per officer, over a date range</li>
+    <li><a href="{% url 'reports:case_report' %}">Case report</a> -- case status breakdown, over a date range</li>
+  </ul>
+</div>
+{% endblock %}

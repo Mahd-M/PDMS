@@ -80,3 +80,22 @@ def case_update_status(request, pk):
         )
         return redirect("cases:fir_detail", pk=case.fir_id)
     return render(request, "cases/case_status_form.html", {"form": form, "case": case})
+
+
+def case_status_breakdown(cases_queryset):
+    """
+    Shared by the dashboard and the reports app -- both need the exact
+    same "count by status, express as a 5%-stepped bar width" shape,
+    just over different querysets (all visible cases vs. a date-filtered
+    subset). One function means the two can't silently drift apart.
+    """
+    status_counts = []
+    total = cases_queryset.count() or 1
+    for value, label in Case.Status.choices:
+        count = cases_queryset.filter(status=value).count()
+        status_counts.append({
+            "label": label,
+            "count": count,
+            "bar_width_pct": round(100 * count / total / 5) * 5,
+        })
+    return status_counts
