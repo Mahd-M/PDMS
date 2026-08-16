@@ -5,4 +5,4 @@ from .models import Evidence
 class EvidenceUploadForm(forms.ModelForm):
     class Meta:
         model = Evidence
-        fields = ["description", "file"]
+        fields = ["description", "evidence_type", "storage_location", "file"]

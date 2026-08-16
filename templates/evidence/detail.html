@@ -4,6 +4,8 @@
 <h1>{{ item.description }}</h1>
 <div class="card">
   <p><strong>Case:</strong> {{ item.case.fir.fir_number }}</p>
+  <p><strong>Type:</strong> {{ item.get_evidence_type_display }}</p>
+  <p><strong>Storage location:</strong> {{ item.storage_location|default:"not yet assigned" }}</p>
   <p><strong>Uploaded:</strong> {{ item.uploaded_at }} by {{ item.uploaded_by }}</p>
   <p><strong>SHA-256:</strong> <code>{{ item.sha256_hash }}</code></p>
   <p><a class="btn" href="{{ item.file.url }}">Download original file</a></p>
