@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Accessibility settings{% endblock %}
+{% block content %}
+<h1>Accessibility settings</h1>
+<div class="card">
+  <form method="get">
+    <input type="hidden" name="save" value="1">
+    <input type="hidden" name="next" value="{{ next_url }}">
+    <p>
+      <input type="checkbox" id="id_large_text" name="large_text" {% if large_text %}checked{% endif %}>
+      <label for="id_large_text">Large text</label>
+    </p>
+    <p>
+      <input type="checkbox" id="id_high_contrast" name="high_contrast" {% if high_contrast %}checked{% endif %}>
+      <label for="id_high_contrast">High contrast</label>
+    </p>
+    <p class="form-actions"><button type="submit" class="btn">Save preferences</button></p>
+  </form>
+  <p class="helper-text">
+    These preferences are stored in a cookie in your browser -- no account changes, no JavaScript.
+    They apply immediately on your next page load, including the sign-in page.
+  </p>
+</div>
+{% endblock %}

@@ -181,6 +181,7 @@ form.stacked input, form.stacked select, form.stacked textarea {
 .form-actions { margin-top: 1.25rem; }
 .record-photo { max-width: 200px; border-radius: var(--radius); }
 .helper-text { color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem; }
+.a11y-bar { margin: 0; padding: 0.35rem 1rem; text-align: right; }
 
 /* Chart bar widths in 5% steps -- server-rendered, no inline styles or JS */
 .w-0 { width: 0%; }
@@ -205,8 +206,27 @@ form.stacked input, form.stacked select, form.stacked textarea {
 .w-95 { width: 95%; }
 .w-100 { width: 100%; }
 
+/* Step 38 accessibility toggle: a cookie sets one or both of these
+   classes on <body> (see dashboard/views.py::accessibility_settings);
+   no JS reads or writes them, only a GET form + Django's cookie API. */
+body.large-text { font-size: 1.25rem; line-height: 1.6; }
+
+body.high-contrast {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #000000;
+  --text-muted: #000000;
+  --border: #000000;
+  --accent: #0000ee;
+  --accent-text: #ffffff;
+  --danger: #b30000;
+  --danger-bg: #ffe0e0;
+  --success: #006400;
+  --success-bg: #e0ffe0;
+}
+
 @media print {
-  .topbar, .sidenav, .btn, form { display: none !important; }
+  .topbar, .sidenav, .btn, form, .a11y-bar { display: none !important; }
   .content { margin: 0; max-width: none; }
   body { background: #fff; color: #000; }
   .card { border: 1px solid #000; }
