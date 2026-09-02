@@ -96,6 +96,19 @@ body {
   cursor: pointer;
   font: inherit;
 }
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+}
+.skip-link:focus { left: 0.5rem; top: 0.5rem; }
+
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body class="{% if request.COOKIES.large_text == '1' %}large-text {% endif %}{% if request.COOKIES.high_contrast == '1' %}high-contrast{% endif %}">
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <p class="helper-text a11y-bar"><a href="{% url 'dashboard:accessibility_settings' %}?next={{ request.get_full_path|urlencode }}">Accessibility settings</a></p>
   {% if request.user.is_authenticated %}
   <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
@@ -38,7 +39,7 @@
   </nav>
   {% endif %}
 
-  <main class="content">
+  <main class="content" id="main-content">
     {% if messages %}
       <ul class="messages">
         {% for message in messages %}<li class="message {{ message.tags }}">{{ message }}</li>{% endfor %}

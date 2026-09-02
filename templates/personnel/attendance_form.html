@@ -25,7 +25,10 @@
         <td>{{ row.officer.user.get_full_name|default:row.officer.user.username }}</td>
         <td>{{ row.officer.station }}</td>
         {% for value, label in status_choices %}
-        <td><input type="radio" name="status_{{ row.officer.pk }}" value="{{ value }}" {% if row.current_status == value %}checked{% endif %}></td>
+        <td>
+          <label class="sr-only" for="id_status_{{ row.officer.pk }}_{{ value }}">{{ label }} -- {{ row.officer.user.get_full_name|default:row.officer.user.username }}</label>
+          <input type="radio" id="id_status_{{ row.officer.pk }}_{{ value }}" name="status_{{ row.officer.pk }}" value="{{ value }}" {% if row.current_status == value %}checked{% endif %}>
+        </td>
         {% endfor %}
       </tr>
       {% empty %}
